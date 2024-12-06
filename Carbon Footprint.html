@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Calculator - AI Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .result h3 {
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Carbon Footprint Calculator - AI Project</h1>
+    <p>Estimate your carbon footprint based on your daily activities. This simple AI-like calculator takes into account factors like transportation, energy consumption, and waste.</p>
+
+    <form id="carbonFootprintForm">
+        <!-- Transportation -->
+        <div class="form-group">
+            <label for="carMiles">How many miles do you drive per day (in miles)?</label>
+            <input type="number" id="carMiles" name="carMiles" required min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="publicTransport">How often do you use public transport per week?</label>
+            <select id="publicTransport" name="publicTransport" required>
+                <option value="0">Never</option>
+                <option value="1">1-2 times</option>
+                <option value="3">3-4 times</option>
+                <option value="5">5+ times</option>
+            </select>
+        </div>
+
+        <!-- Energy Consumption -->
+        <div class="form-group">
+            <label for="electricity">Monthly electricity usage (in kWh)?</label>
+            <input type="number" id="electricity" name="electricity" required min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="heating">Do you use heating in winter? (1 = Yes, 0 = No)</label>
+            <input type="number" id="heating" name="heating" required min="0" max="1">
+        </div>
+
+        <!-- Waste -->
+        <div class="form-group">
+            <label for="waste">How much waste do you produce weekly (in kg)?</label>
+            <input type="number" id="waste" name="waste" required min="0">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit">Calculate My Carbon Footprint</button>
+    </form>
+
+    <!-- Result Section -->
+    <div class="result" id="resultSection" style="display: none;">
+        <h3>Your Carbon Footprint Estimate</h3>
+        <p id="footprintResult"></p>
+        <p id="suggestions"></p>
+    </div>
+</div>
+
+<script>
+// Function to calculate carbon footprint based on user input
+function calculateCarbonFootprint(carMiles, publicTransport, electricity, heating, waste) {
+    // Simplified carbon footprint calculation
+    const carCarbonFactor = 0.411; // CO2 emissions per mile (grams)
+    const publicTransportFactor = 0.8; // Approximate grams of CO2 per use of public transport
+    const electricityCarbonFactor = 0.9; // kg CO2 per kWh of electricity
+    const heatingCarbonFactor = 2.5; // kg CO2 per day of heating usage
+    const wasteCarbonFactor = 1.5; // kg CO2 per kg of waste produced weekly
+
+    // Calculate carbon footprint
+    let totalFootprint = 0;
+
+    totalFootprint += carMiles * carCarbonFactor;
+    totalFootprint += publicTransport * publicTransportFactor * 4; // multiply by 4 for average month (4 weeks)
+    totalFootprint += electricity * electricityCarbonFactor;
+    if (heating == 1) totalFootprint += 30 * heatingCarbonFactor; // Assume heating used 30 days in winter
+    totalFootprint += waste * wasteCarbonFactor * 4; // multiply by 4 for weekly waste
+
+    return totalFootprint; // return result in kg CO2
+}
+
+// Handle form submission and display result
+document.getElementById("carbonFootprintForm").addEventListener("submit", function(event) {
+    event.preventDefault();  // Prevent page reload on form submission
+
+    // Collect user input values
+    const carMiles = parseFloat(document.getElementById("carMiles").value);
+    const publicTransport = parseInt(document.getElementById("publicTransport").value);
+    const electricity = parseFloat(document.getElementById("electricity").value);
+    const heating = parseInt(document.getElementById("heating").value);
+    const waste = parseFloat(document.getElementById("waste").value);
+
+    // Calculate the carbon footprint
+    const footprint = calculateCarbonFootprint(carMiles, publicTransport, electricity, heating, waste);
+
+    // Display the result
+    const resultSection = document.getElementById("resultSection");
+    const footprintResult = document.getElementById("footprintResult");
+    const suggestions = document.getElementById("suggestions");
+
+    footprintResult.textContent = `Your estimated carbon footprint is ${footprint.toFixed(2)} kg of CO2 per month.`;
+    suggestions.textContent = `To reduce your carbon footprint, consider using less personal transport, reducing energy consumption, and recycling more waste.`;
+
+    resultSection.style.display = "block"; // Show the result section
+});
+</script>
+
+</body>
+</html>
